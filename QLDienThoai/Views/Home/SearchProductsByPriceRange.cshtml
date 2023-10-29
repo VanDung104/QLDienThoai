@@ -1,0 +1,11 @@
+﻿
+@{
+    ViewData["Title"] = "SearchProductsByPriceRange";
+    Layout = "~/Views/Shared/_ShopLayout.cshtml";
+}
+@model IEnumerable<TDanhMucSp>;
+@foreach (var item in Model)
+{
+    @await Html.PartialAsync("_PatialSanPham", item)
+}
+

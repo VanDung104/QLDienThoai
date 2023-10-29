@@ -26,7 +26,14 @@ namespace QLDienThoai.Controllers
             PagedList<TDanhMucSp> lst = new(lstsanpham, pageNumber, pageSize);
             return View(lst);
         }
-
+        public IActionResult SanPham(int? page)
+        {
+            int pageSize = 8;
+            int pageNumber = page == null || page < 0 ? 1 : page.Value;
+            var lstsanpham = db.TDanhMucSps.AsNoTracking().OrderBy(x => x.TenSp);
+            PagedList<TDanhMucSp> lst = new PagedList<TDanhMucSp>(lstsanpham, pageNumber, pageSize);
+            return View(lst);
+        }
         public IActionResult SanPhamTheoLoai(String maloai, int? page)
         {
             int pageSize = 8;
@@ -43,6 +50,35 @@ namespace QLDienThoai.Controllers
             var anhSanPham = db.TAnhSps.Where(x => x.MaSp == maSp).ToList();
             ViewBag.anhSanPham = anhSanPham;
             return View(sanpham);
+        }
+
+        public IActionResult Search(String nameSearch)
+        {
+            var lst = db.TDanhMucSps.Where(x => x.TenSp.ToLower().Contains(nameSearch.ToLower())).OrderBy(x => x.TenSp);
+            return View(lst);
+        }
+
+        public IActionResult SearchProductsByPriceRange(string[] priceRange)
+        {
+            List<TDanhMucSp> products = db.TDanhMucSps.ToList();
+
+            if (priceRange == null || priceRange.Contains("all"))
+            {
+                return View(products);
+            }
+
+            var new_products = new List<TDanhMucSp>();
+            foreach (var range in priceRange)
+            {
+                var priceRangeArray = range.Split('-');
+                int minPrice = int.Parse(priceRangeArray[0]);
+                int maxPrice = int.Parse(priceRangeArray[1]);
+
+                var filt = products.Where(p => p.GiaLonNhat >= minPrice && p.GiaLonNhat <= maxPrice).ToList();
+                new_products.AddRange(filt);
+            }
+
+            return View(new_products.Distinct());
         }
         public IActionResult Privacy()
         {
