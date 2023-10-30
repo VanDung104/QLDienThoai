@@ -39,7 +39,6 @@ public partial class TDanhMucSp
 
     public decimal? GiaLonNhat { get; set; }
     [NotMapped]
-    [Required]
     public IFormFile CoverPhoto { get; set; }
 
     public virtual TChatLieu? MaChatLieuNavigation { get; set; }
