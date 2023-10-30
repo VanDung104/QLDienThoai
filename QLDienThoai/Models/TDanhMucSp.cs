@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QLDienThoai.Models;
 
@@ -36,6 +38,9 @@ public partial class TDanhMucSp
     public decimal? GiaNhoNhat { get; set; }
 
     public decimal? GiaLonNhat { get; set; }
+    [NotMapped]
+    [Required]
+    public IFormFile CoverPhoto { get; set; }
 
     public virtual TChatLieu? MaChatLieuNavigation { get; set; }
 

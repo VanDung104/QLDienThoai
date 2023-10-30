@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QLDienThoai.Models;
@@ -11,6 +12,7 @@ namespace QLDienThoai.Areas.Admin.Controllers
     [Route("admin/homeadmin")]
     public class HomeAdminController : Controller
     {
+
         QldienThoaiContext db = new QldienThoaiContext();
         [Route("")]
         [Route("index")]
@@ -44,10 +46,15 @@ namespace QLDienThoai.Areas.Admin.Controllers
         [Route("themsanphammoi")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult ThemSanPhamMoi(TDanhMucSp sanPham)
+        public  IActionResult ThemSanPhamMoi(TDanhMucSp sanPham)
         {
             if(ModelState.IsValid)
             {
+                if(sanPham.CoverPhoto != null)
+                {
+                    string folder =sanPham.CoverPhoto.FileName;
+                    sanPham.AnhDaiDien = folder;
+                }
                 db.TDanhMucSps.Add(sanPham);
                 db.SaveChanges();
                 return RedirectToAction("DanhMucSanPham");
