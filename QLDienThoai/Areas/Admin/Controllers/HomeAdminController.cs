@@ -93,5 +93,21 @@ namespace QLDienThoai.Areas.Admin.Controllers
             }
             return View(sanPham);
         }
+        [Route("XoaSanPham")]
+        [HttpGet]
+        public IActionResult XoaSanPham(string masanpham)
+        {
+            TempData["Message"] = "";
+            var chiTietHDB = db.TChiTietHdbs.Where(x=>x.MaSp==masanpham).ToList();
+            if(chiTietHDB.Count() >0)
+            {
+                TempData["Message"] = "khong the xoa san pham nay";
+                return RedirectToAction("DanhMucSanPham", "HomeAdmin");
+            }
+            db.Remove(db.TDanhMucSps.Find(masanpham));
+            db.SaveChanges();
+            TempData["Message"] = "San pham da dc xoa";
+            return RedirectToAction("DanhMucSanPham", "HomeAdmin");
+        }
     }
 }
