@@ -12,6 +12,14 @@
 <p>
     <a asp-action="ThemSanPhamMoi">Create New</a>
 </p>
+<form class="form-inline" asp-action="DanhMucSanPham" method="get">
+    <div class="input-group border border-primary">
+        <div class="input-group-prepend bg-transparent">
+            <i class="input-group-text border-0 mdi mdi-magnify"></i>
+        </div>
+        <input type="text" class="form-control bg-transparent border-0" placeholder="Search Name Cell Phone" name="name"><button>Tìm</button>
+    </div>
+</form>
 <table class="table">
     <thead>
         <tr class="table-success">

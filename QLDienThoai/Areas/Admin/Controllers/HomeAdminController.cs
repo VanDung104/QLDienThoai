@@ -22,14 +22,44 @@ namespace QLDienThoai.Areas.Admin.Controllers
             return View();
         }
         [Authentication]
+        [HttpGet]
         [Route("danhmucsanpham")]
-        public IActionResult DanhMucSanPham(int? page)
+        public IActionResult DanhMucSanPham(int? page , string? name)
         {
             int pageSize = 10;
             int pageNumber = page == null || page < 0 ? 1 : page.Value;
             var lstsanpham = db.TDanhMucSps.AsNoTracking().OrderBy(x => x.TenSp);
-            PagedList<TDanhMucSp> lst = new(lstsanpham, pageNumber, pageSize);
-            return View(lst);
+            if (!string.IsNullOrEmpty(name))
+            {
+                var lstsploc = db.TDanhMucSps.Where(x => x.TenSp.Contains(name));
+                PagedList<TDanhMucSp> lstloc = new(lstsploc, pageNumber, pageSize);
+                return View(lstloc);
+            }
+            else
+            {
+                PagedList<TDanhMucSp> lst = new(lstsanpham, pageNumber, pageSize);
+                return View(lst);
+            }
+        }
+        [Authentication]
+        [Route("danhmuckhachhang")]
+        [HttpGet]
+        public IActionResult DanhMucKhachHang(int? page, string? name)
+        {
+            int pageSize = 3;
+            int pageNumber = page == null || page < 0 ? 1 : page.Value;
+            var lstkhachhang = db.TKhachHangs.AsNoTracking().OrderBy(x => x.TenKhachHang);
+            if (!string.IsNullOrEmpty(name))
+            {
+                var lstkhachhangloc = db.TKhachHangs.Where(x => x.TenKhachHang.Contains(name));
+                PagedList<TKhachHang> lstloc = new(lstkhachhangloc, pageNumber, pageSize);
+                return View(lstloc);
+            }
+            else
+            {
+                PagedList<TKhachHang> lst = new(lstkhachhang, pageNumber, pageSize);
+                return View(lst);
+            }
         }
         [Authentication]
         [Route("themsanphammoi")]
@@ -108,6 +138,27 @@ namespace QLDienThoai.Areas.Admin.Controllers
             db.SaveChanges();
             TempData["Message"] = "San pham da dc xoa";
             return RedirectToAction("DanhMucSanPham", "HomeAdmin");
+        }
+        [Authentication]
+        [Route("themkhachhang")]
+        [HttpGet]
+        public IActionResult ThemKhachHang()
+        {
+            ViewBag.Username = new SelectList(db.TUsers.ToList(), "Username", "Username");
+            return View();
+        }
+        [Route("themkhachhang")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ThemKhachHang(TKhachHang khachHang)
+        {
+            if (ModelState.IsValid)
+            {
+                db.TKhachHangs.Add(khachHang);
+                db.SaveChanges();
+                return RedirectToAction("DanhMucKhachHang");
+            }
+            return View(khachHang);
         }
     }
 }
