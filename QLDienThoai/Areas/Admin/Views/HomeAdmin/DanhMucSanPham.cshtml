@@ -1,0 +1,80 @@
+﻿@using QLDienThoai.Models;
+@using X.PagedList.Mvc.Core;
+@model X.PagedList.IPagedList<TDanhMucSp>
+
+@{
+    ViewData["Title"] = "Danh mục sản phẩm";
+    Layout = "_LayoutAdmin";
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+<h2>Danh Mục Các Sản Phẩm</h2>
+<p>@TempData["Message"]</p>
+<p>
+    <a asp-action="ThemSanPhamMoi">Create New</a>
+</p>
+<form class="form-inline" asp-action="DanhMucSanPham" method="get">
+    <div class="input-group border border-primary">
+        <div class="input-group-prepend bg-transparent">
+            <i class="input-group-text border-0 mdi mdi-magnify"></i>
+        </div>
+        <input type="text" class="form-control bg-transparent border-0" placeholder="Search Name Cell Phone" name="name"><button>Tìm</button>
+    </div>
+</form>
+<table class="table">
+    <thead>
+        <tr class="table-success">
+            <th>
+                Tên Sản Phẩm
+            </th>
+            <th>
+                Loại
+            </th>
+            <th>
+                Thời Gian Bảo Hành
+            </th>
+            <th>
+                Chiết Khấu
+            </th>
+            <th>
+                Giá Nhỏ Nhất
+            </th>
+            <th>
+                Giá Lớn nhất
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr class="table-warning">
+            <td>
+                @Html.DisplayFor(modelItem => item.TenSp)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Model)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ThoiGianBaoHanh)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ChietKhau)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GiaNhoNhat)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GiaLonNhat)
+            </td>
+            <td>
+                    <a asp-action="ChinhSuaSanPham" asp-route-masanpham="@item.MaSp">Edit</a> |
+                <a asp-action="XoaSanPham" asp-route-masanpham="@item.MaSp">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+@Html.PagedListPager(Model, page => Url.Action("DanhMucSanPham", new {page=page}), new
+X.PagedList.Web.Common.PagedListRenderOptions(){
+    LiElementClasses = new List<String> {"page-item"},
+    PageClasses = new List<String> {"page-link"}
+})

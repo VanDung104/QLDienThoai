@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using System.Drawing.Printing;
 using X.PagedList;
+using QLDienThoai.Models.Authentication;
 
 namespace QLDienThoai.Controllers
 {
@@ -17,7 +18,7 @@ namespace QLDienThoai.Controllers
         {
             _logger = logger;
         }
-
+        [Authentication]
         public IActionResult Index(int? page)
         {
             int pageSize = 8;
@@ -26,7 +27,8 @@ namespace QLDienThoai.Controllers
             PagedList<TDanhMucSp> lst = new(lstsanpham, pageNumber, pageSize);
             return View(lst);
         }
-        public IActionResult SanPham(int? page)
+		[Authentication]
+		public IActionResult SanPham(int? page)
         {
             int pageSize = 8;
             int pageNumber = page == null || page < 0 ? 1 : page.Value;
@@ -34,7 +36,8 @@ namespace QLDienThoai.Controllers
             PagedList<TDanhMucSp> lst = new PagedList<TDanhMucSp>(lstsanpham, pageNumber, pageSize);
             return View(lst);
         }
-        public IActionResult SanPhamTheoLoai(String maloai, int? page)
+
+		public IActionResult SanPhamTheoLoai(String maloai, int? page)
         {
             int pageSize = 8;
             int pageNumber = page == null || page < 0 ? 1 : page.Value;
@@ -43,8 +46,8 @@ namespace QLDienThoai.Controllers
             ViewBag.maloai = maloai;
             return View(lst);
         }
-
-        public IActionResult ChiTietSanPham(string maSp)
+		[Authentication]
+		public IActionResult ChiTietSanPham(string maSp)
         {
             var sanpham = db.TDanhMucSps.SingleOrDefault(x => x.MaSp == maSp);
             var anhSanPham = db.TAnhSps.Where(x => x.MaSp == maSp).ToList();
