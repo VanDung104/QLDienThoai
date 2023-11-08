@@ -160,5 +160,45 @@ namespace QLDienThoai.Areas.Admin.Controllers
             }
             return View(khachHang);
         }
+
+
+        [Authentication]
+        [Route("chinhsuakhachhang")]
+        [HttpGet]
+        public IActionResult ChinhSuaKhachHang(string maKhachHang)
+        {
+            ViewBag.Username = new SelectList(db.TUsers.ToList(), "Username", "Username");
+            var khachhang = db.TKhachHangs.Find(maKhachHang);
+            return View(khachhang);
+        }
+        [Route("chinhsuakhachhang")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ChinhSuaKhachHang(TKhachHang khachhang)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(khachhang).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("DanhMucKhachHang", "HomeAdmin");
+            }
+            return View(khachhang);
+        }
+        [Route("xoakhachhang")]
+        [HttpGet]
+        public IActionResult XoaKhachHang(string makhachhang)
+        {
+            TempData["Message"] = "";
+            var ctHDB = db.THoaDonBans.Where(x=>x.MaKhachHang == makhachhang).ToList();
+            if (ctHDB.Count() > 0)
+            {
+                TempData["Message"] = "khong the xoa san pham nay";
+                return RedirectToAction("DanhMuckhachHang", "HomeAdmin");
+            }
+            db.Remove(db.TKhachHangs.Find(makhachhang));
+            db.SaveChanges();
+            TempData["Message"] = "San pham da dc xoa";
+            return RedirectToAction("DanhMucKhachHang", "HomeAdmin");
+        }
     }
 }
